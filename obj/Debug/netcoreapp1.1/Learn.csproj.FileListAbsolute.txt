@@ -1,0 +1,8 @@
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Debug/netcoreapp1.1/Learn.deps.json
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Debug/netcoreapp1.1/Learn.runtimeconfig.json
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Debug/netcoreapp1.1/Learn.runtimeconfig.dev.json
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Debug/netcoreapp1.1/Learn.dll
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Debug/netcoreapp1.1/Learn.pdb
+/home/kevin/Development/school/artificial_intelligence/Learn/obj/Debug/netcoreapp1.1/Learn.AssemblyInfo.cs
+/home/kevin/Development/school/artificial_intelligence/Learn/obj/Debug/netcoreapp1.1/Learn.dll
+/home/kevin/Development/school/artificial_intelligence/Learn/obj/Debug/netcoreapp1.1/Learn.pdb
