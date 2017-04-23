@@ -1,76 +1,51 @@
 using System.Collections.Generic;
+using System;
 
 namespace Learn
 {
     public class Agent
     {
-        // Possible Agent conditions
-        public enum Condition : byte { Success, Failure, Uncertain };
-
-        // Starting state for problem domain
-        public IState State { get; set; }
-
-        // Define a delegate for testing goals
-        public delegate bool GoalTest(IState state);
-        public GoalTest Test { get; set; }
-
         // Discovery bank to store and reward discovered states
         private Discovered discovered;
 
-        // Create a default Agent with no starting state or GoalTest
+        // Wins, Losses, Draws
+        public long Victories { get; set; }
+        public long Defeats { get; set; }
+        public long Draws { get; set; }
+
+        // Create a default Agent with no GoalTest
         public Agent()
         {
-            State = null;
-            Test = null;
-            
             discovered = new Discovered();
         }
 
-        // Create an agent with a starting state but no GoalTest
-        public Agent(IState startingState)
+        // Respond to victory and defeat events
+        public void Victory(object sender, EventArgs e)
         {
-            State = startingState;
-            Test = null;
-
-            discovered = new Discovered();
-
-            /* Place the initial state into the Discovery bank
-             * in case the initial state happens to be the solution.
-             */
-            List<IState> starter = new List<IState>();
-            starter.Add(State);
-            discovered.ChooseSuccessor(starter);
+            discovered.Reward();
+            Victories += 1;
         }
 
-        // Create an agent with a starting state and GoalTest
-        public Agent(IState startingState, GoalTest test)
+        public void Defeat(object sender, EventArgs e)
         {
-            State = startingState;
-            Test = test;
-            
-            discovered = new Discovered();
-            List<IState> starter = new List<IState>();
-            starter.Add(State);
-            discovered.ChooseSuccessor(starter);
+            discovered.Penalize();
+            Defeats += 1;
         }
 
-        public Condition Act()
+        public void Draw(object sender, EventArgs e)
         {
-            if (Test(State))
-            {
-                discovered.Update();
-                discovered.Clear();
-                return Condition.Success;
-            }
-
-            List<IState> successorStates = State.getSuccessors();
-            
-            return Condition.Uncertain;
+            discovered.Reset();
+            Draws += 1;
         }
 
-        public void Reset()
+        // Use GoalTest to invoke appropriate behaviors
+        public IState Act(Func<List<IState>> goalTest)
         {
+            // Generate successor states
+            List<IState> successorStates = goalTest();
 
+            // Return the next best option
+            return discovered.ChooseSuccessor(successorStates);
         }
     }
 }

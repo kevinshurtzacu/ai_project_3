@@ -15,7 +15,7 @@ namespace Learn
         {
             moves = new Stack<IState>();
             discovered = new Dictionary<IState, double>();
-            ExploreRate = .025;
+            ExploreRate = .1;
         }
 
         // Create a Discovered bank with a custom ExploreRate
@@ -40,8 +40,8 @@ namespace Learn
                 // Update best state most of the time
                 Random rand = new Random();
 
-                if (rand.NextDouble() >= ExploreRate)
-                    bestState = discovered[state] > bestValue ? state : bestState;
+                if (rand.NextDouble() >= ExploreRate || bestState == null)
+                    bestState = (discovered[state] > bestValue) ? state : bestState;
             }
 
             // Add chosen state to moves
@@ -50,7 +50,7 @@ namespace Learn
             return bestState;
         }
 
-        public void Update()
+        public void Reward()
         {
             // Improve all state scores on a graduated scale from 80% to 20%
             int numMoves = moves.Count;
@@ -70,10 +70,27 @@ namespace Learn
             }
         }
 
-        public void Clear()
+        public void Penalize()
         {
-            // Clear out past moves, no rewards
-            moves.Clear();
+            // Penalize all state scores on a graduated scale from 80% to 20%
+            int numMoves = moves.Count;
+            double percentPenalty = .80;
+
+            while (moves.Count > 0)
+            {
+                IState state = moves.Pop();
+                
+                // Reward favorable states
+                double diff = discovered[state];
+                double penalty = diff * percentPenalty;
+                discovered[state] -= penalty;
+
+                // Decrement reward percentage
+                percentPenalty -= (.80 - .20) / numMoves; 
+            }
         }
+
+        // Clear out past moves, no rewards
+        public void Reset() => moves.Clear();
     }
 }
