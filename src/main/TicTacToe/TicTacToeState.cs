@@ -44,6 +44,13 @@ namespace Learn.TicTacToe
                 gameOver = true;
             }
 
+            // Player O wins
+            if (playerWin(Move.O))
+            {
+                PlayerWinsO?.Invoke(this, EventArgs.Empty);
+                gameOver = true;
+            }
+
             // No viable options remain
             if (successors.Count == 0)
             {
@@ -53,10 +60,7 @@ namespace Learn.TicTacToe
             
             // If game over, start over
             if (gameOver)
-            {
-                resetBoard();
-                return getSuccessors(Move.X);
-            }
+                return new TicTacToeState().getSuccessors(Move.X);
             
             // Goal not met, but options remain
             return successors;
@@ -69,6 +73,13 @@ namespace Learn.TicTacToe
             bool gameOver = false;
 
             // Player X wins
+            if (playerWin(Move.X))
+            {
+                PlayerWinsX?.Invoke(this, EventArgs.Empty);
+                gameOver = true;
+            }
+
+            // Player O wins
             if (playerWin(Move.O))
             {
                 PlayerWinsO?.Invoke(this, EventArgs.Empty);
@@ -84,10 +95,7 @@ namespace Learn.TicTacToe
 
             // If game over, start over
             if (gameOver)
-            {
-                resetBoard();
-                return getSuccessors(Move.O);
-            }
+                return new TicTacToeState().getSuccessors(Move.O);
 
             // Goal not met, but options remain
             return successors;
@@ -121,7 +129,46 @@ namespace Learn.TicTacToe
         public override int GetHashCode()
         {
             // Only the array must be unique
-            return board.GetHashCode();
+            int finalHash = 0x0;
+            
+            /* Breaks every space on the board into two-bit partitions of an integer value, thereby
+             * representing the board with the first 18 bits of the 32-bit integer.
+             * 
+             * The function below identifies the proper bit-offset for each space's 2-bit partition, 
+             * and then applies bit configurations 0 (X), 1 (O), or 2 (Blank) to the 2-bit partition
+             * starting at the offset.
+             *
+             * This ensures a unique bit-string for every permutation in the board, theoretically
+             * allowing for a maximum of 19,683 (3^9) possible permutations thereof.
+             */
+            for (int rowIndex = 0; rowIndex < 3; ++rowIndex)
+            {
+                for (int colIndex = 0; colIndex < 3; ++colIndex)
+                {
+                    // Represents the low-order bit of the correct bit-partition
+                    int offset = (int)(Math.Pow(2, ((rowIndex * 3) + colIndex) * 2));
+
+                    switch (board[rowIndex, colIndex])
+                    {
+                        // Assign bit-partition 0b00 (0)
+                        case Move.X:
+                            // This position should be marked 0b00, which it already is.
+                            break;
+                        
+                        // Assign bit-partition 0b01 (1)
+                        case Move.O:
+                            finalHash |= offset;
+                            break;
+
+                        // Assign bit-partitino 0b10 (2)
+                        case Move.Blank:
+                            finalHash |= (offset * 2);
+                            break;
+                    }
+                }
+            }
+
+            return finalHash;
         }
 
         public override string ToString()

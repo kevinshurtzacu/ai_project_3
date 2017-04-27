@@ -19,7 +19,7 @@ namespace Learn
             discovered = new Discovered();
         }
 
-        // Respond to victory and defeat events
+        // Respond to victory, defeat, and draw events
         public void Victory(object sender, EventArgs e)
         {
             discovered.Reward();
@@ -38,6 +38,10 @@ namespace Learn
             Draws += 1;
         }
 
+        // Toggle between play behaviors
+        public void TrainingMode(double exploreRate = .5) { discovered.ExploreRate = exploreRate; }
+        public void CompeteMode() { discovered.ExploreRate = 0; }
+
         // Use GoalTest to invoke appropriate behaviors
         public IState Act(Func<List<IState>> goalTest)
         {
@@ -47,5 +51,7 @@ namespace Learn
             // Return the next best option
             return discovered.ChooseSuccessor(successorStates);
         }
+
+        public override string ToString() => discovered.ToString();
     }
 }

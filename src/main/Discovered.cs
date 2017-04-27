@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using Learn.TicTacToe;
 
 namespace Learn
 {
@@ -15,7 +16,7 @@ namespace Learn
         {
             moves = new Stack<IState>();
             discovered = new Dictionary<IState, double>();
-            ExploreRate = .1;
+            ExploreRate = 0.0;
         }
 
         // Create a Discovered bank with a custom ExploreRate
@@ -36,12 +37,14 @@ namespace Learn
                 // Add any new states to the discovered list
                 if (!discovered.ContainsKey(state))
                     discovered.Add(state, 0.5);
-                
+
                 // Update best state most of the time
                 Random rand = new Random();
 
                 if (rand.NextDouble() >= ExploreRate || bestState == null)
                     bestState = (discovered[state] > bestValue) ? state : bestState;
+                else
+                    bestState = (states[rand.Next() % states.Count]);
             }
 
             // Add chosen state to moves
@@ -92,5 +95,18 @@ namespace Learn
 
         // Clear out past moves, no rewards
         public void Reset() => moves.Clear();
+        
+        public override string ToString()
+        {
+            string output = "";
+
+            // Summarize information
+            output += String.Format($"Keys: {discovered.Keys.Count}");
+            output += String.Format($" Values: {discovered.Values.Count}");
+            output += String.Format($" Moves: {moves.Count}\n");
+
+            return output;
+        }
     }
+
 }
