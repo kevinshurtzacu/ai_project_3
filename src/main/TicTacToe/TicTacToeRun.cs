@@ -1,199 +1,163 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.CommandLineUtils;
+using System.Collections.Generic;
+using System.IO;
 using System;
 
 namespace Learn.TicTacToe
 {
     class TicTacToeRun
     {
-        private static void wireEvents(TicTacToeState tttState, Agent playerOne, Agent playerTwo)
+        // Deserialize data
+        private static void handleInFile(CommandOption inFile, Agent agentOne, Agent agentTwo, int training)
         {
-            // Wire up player behaviors to state events
-            TicTacToeState.PlayerWinsX += playerOne.Victory;
-            TicTacToeState.PlayerWinsX += playerTwo.Defeat;
-            TicTacToeState.PlayerWinsO += playerOne.Defeat;
-            TicTacToeState.PlayerWinsO += playerTwo.Victory;
-            TicTacToeState.CatsGame    += playerOne.Draw;
-            TicTacToeState.CatsGame    += playerTwo.Draw;
-        }
-        
-        private static void trainZeroSum(long practiceGames, params Agent[] agents)
-        {
-            // Create starting state
-            IState state = new TicTacToeState();
-            TicTacToeState tttState = state as TicTacToeState;
-            
-            // Put agents in training mode
-            foreach (Agent agent in agents)
-                agent.TrainingMode();
-
-            // Use repeated wins as a benchmark
-            bool enoughTraining = false;
-            long games = 0;
-            int ticks = 0;
-            bool dotPrinted = false;
-
-            // Reset dotPrinted after it has moved on
-            Action<object, EventArgs> resetDotPrinted = (object sender, EventArgs e) => dotPrinted = false;
-            
-            TicTacToeState.PlayerWinsX += resetDotPrinted;
-            TicTacToeState.PlayerWinsO += resetDotPrinted;
-            TicTacToeState.CatsGame    += resetDotPrinted;
-
-            // Begin training progress bar
-            Console.Write("[ ");
-
-            // Watch each agent evolve
-            while (!enoughTraining)
+            // Deserialize data or train fresh agents
+            if (inFile.HasValue())
             {
-                // Train the first agent
-                tttState = agents[0].Act(tttState.GoalTestX) as TicTacToeState;
-
-                games = agents[0].Victories + agents[1].Victories + agents[0].Draws;
-                
-                if (games % (practiceGames / 100) == 0 && !dotPrinted)
+                try
                 {
-                    // Update competitiveness at quarters
-                    if (ticks % 25 == 0)
-                    {
-                        // Display quarter in progress bar
-                        Console.Write($"[{ticks}]");
-
-                        // Make each agent more competitive
-                        foreach (Agent agent in agents)
-                            agent.TrainingMode((ticks / 100) * 0.5);
-                    }
-
-                    // Update ticks
-                    ticks += 1;
-
-                    // Don't include hundredth tick
-                    if (ticks < 100)
-                        Console.Write(".");
-                    
-                    dotPrinted = true;
+                    // Use previously constructed data
+                    using (FileStream rofStream = File.OpenRead(inFile.Value()))
+                        agentOne.Discovered.ImportData(rofStream);
                 }
-
-                // Check if total number of practices have been met
-                if (games > practiceGames)
-                    enoughTraining = true;
-                
-                // Train the second agent, assuming they are not sufficiently trained
-                if (!enoughTraining)
+                catch (Exception e)
                 {
-                    tttState = agents[1].Act(tttState.GoalTestO) as TicTacToeState;
-
-                    games = agents[0].Victories + agents[1].Victories + agents[0].Draws;
-                    
-                    if (games % (practiceGames / 100) == 0 && !dotPrinted)
-                    {
-                        // Update competitiveness at quarters
-                        if (ticks % 25 == 0)
-                        {
-                            // Display quarter in progress bar
-                            Console.Write($"[{ticks}]");
-
-                            // Make each agent more competitive
-                            foreach (Agent agent in agents)
-                                agent.TrainingMode((ticks / 100) * 0.5);
-                        }
-
-                        // Update ticks
-                        ticks += 1;
-
-                        // Don't include hundredth tick
-                        if (ticks < 100)
-                            Console.Write(".");
-                        
-                        dotPrinted = true;
-                    }
-
-                    // Check if total number of practices have been met
-                    if (games > practiceGames)
-                        enoughTraining = true;
+                    // Report failure to open or read serialized data
+                    Console.Error.WriteLine($"Error: {e}; Failed to read serialized data");
                 }
             }
-
-            
-            // End progress bar
-            Console.WriteLine(" ]");
-            Console.WriteLine("\n");
-
-            // Put agents in competitive mode
-            foreach (Agent agent in agents)
-                agent.CompeteMode();
-        }
-
-        private static void printOptions(List<IState> successors)
-        {
-            for (int successorIndex = 0; successorIndex < successors.Count; ++successorIndex)
+            else
             {
-                Console.WriteLine($"--- Option {successorIndex + 1} [{successorIndex + 1}] ---", successorIndex);
-                Console.WriteLine(successors[successorIndex]);
+                // Train fresh agents
+                TicTacToeState.TrainZeroSum(training, true, agentOne, agentTwo);                
+            }
+        }
+        
+        // Save serialized data
+        private static void handleOutFile(CommandOption outFile, Agent agent)
+        {
+            if (outFile.HasValue())
+            {
+                try
+                {
+                    // Use previously constructed data
+                    using (FileStream wfStream = File.OpenWrite(outFile.Value()))
+                        agent.Discovered.ExportData(wfStream);
+                }
+                catch (Exception e)
+                {
+                    // Report failure to open or write serialized data
+                    Console.Error.WriteLine($"Error: {e}; Failed to write serialized data");
+                }
             }
         }
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Tic Tac Toe Machine Learning Demonstration");
+            // Process CLI arguments
+            var cla = new CommandLineApplication(throwOnUnexpectedArg: false);
+            
+            // Handle serialized input
+            CommandOption inFile = cla.Option(
+                "-i | --inFile <filename>",
+                "Enter the filename to load to restore learning data",
+                CommandOptionType.SingleValue
+            );
 
-            // Create starting state
-            IState state = new TicTacToeState();
-            TicTacToeState tttState = state as TicTacToeState;
+            // Produce serialized output
+            CommandOption outFile = cla.Option(
+                "-o | --outFile <filename>",
+                "Enter the filename to target when saving the learning data",
+                CommandOptionType.SingleValue
+            );
 
-            // Create players one and two
-            Agent playerOne = new Agent();
-            Agent playerTwo = new Agent();
+            CommandOption training = cla.Option(
+                "-t | --training <games>",
+                "Enter the number of games to run during training before playing",
+                CommandOptionType.SingleValue
+            );
 
-            // Wire player behaviors to state events and train agents
-            wireEvents(tttState, playerOne, playerTwo);
-            trainZeroSum(100000, playerOne, playerTwo);
+            // Configure help option
+            cla.HelpOption("-h | --help");
 
-            // Determine victory, defeat, and cat's game events
-            bool playerTwoVictory = false;
-            Action<object, EventArgs> declareVictory = (object sender, EventArgs e) => playerTwoVictory = true;
-            TicTacToeState.PlayerWinsO += declareVictory;
-
-            bool playerTwoDefeat = false;
-            Action<object, EventArgs> declareDefeat = (object sender, EventArgs e) => playerTwoDefeat = true;
-            TicTacToeState.PlayerWinsX += declareDefeat;
-
-            bool playerTwoDraw = false;
-            Action<object, EventArgs> declareDraw = (object sender, EventArgs e) => playerTwoDraw = true;
-            TicTacToeState.CatsGame += declareDraw;
-
-            // Debug
-            Console.WriteLine(playerOne);
-
-            // Player competes with computer
-            while (!playerTwoVictory && !playerTwoDraw && !playerTwoDefeat)
+            // Run the application
+            cla.OnExecute(() =>
             {
-                Console.WriteLine(tttState);
-                tttState = playerOne.Act(tttState.GoalTestX) as TicTacToeState;
+                Console.WriteLine("Tic Tac Toe Machine Learning Demonstration");
 
-                if (!playerTwoVictory && !playerTwoDraw && !playerTwoDefeat)
+                // Create starting state
+                IState state = new TicTacToeState();
+                TicTacToeState tttState = state as TicTacToeState;
+
+                // Create players one and two
+                Agent playerOne = new Agent();
+                Agent playerTwo = new Agent();
+
+                // Wire player behaviors to state events
+                TicTacToeState.WireEvents(tttState, playerOne, playerTwo);
+                
+                // Set number of games to train for, default is 100,000
+                int numGames = training.HasValue() ? Int32.Parse(training.Value()) : 100000;
+
+                // Handle Arguments
+                handleInFile(inFile, playerOne, playerTwo, numGames);
+                handleOutFile(outFile, playerOne);
+
+                // Determine victory, defeat, and cat's game events
+                bool playerTwoVictory = false;
+                Action<object, EventArgs> declareVictory = (object sender, EventArgs e) => playerTwoVictory = true;
+                TicTacToeState.PlayerWinsO += declareVictory;
+
+                bool playerTwoDefeat = false;
+                Action<object, EventArgs> declareDefeat = (object sender, EventArgs e) => playerTwoDefeat = true;
+                TicTacToeState.PlayerWinsX += declareDefeat;
+
+                bool playerTwoDraw = false;
+                Action<object, EventArgs> declareDraw = (object sender, EventArgs e) => playerTwoDraw = true;
+                TicTacToeState.CatsGame += declareDraw;
+
+                // Player competes with computer
+                while (!playerTwoVictory && !playerTwoDraw && !playerTwoDefeat)
                 {
-                    // Display move options
-                    List<IState> options = tttState.GoalTestO();
-                    printOptions(options);
+                    tttState = playerOne.Act(tttState.SuccessorsX) as TicTacToeState;
 
-                    // Prompt the user
-                    Console.Write("Please select a move: ");
-                    int moveIndex = Int32.Parse(Console.ReadLine()) - 1;
+                    // No need to GoalTest if game is over
+                    if (!playerTwoDraw)
+                        tttState.GoalTest();
 
-                    // Assign the state
-                    tttState = options[moveIndex] as TicTacToeState;
+                    if (!playerTwoVictory && !playerTwoDraw && !playerTwoDefeat)
+                    {
+                        // Display move options
+                        List<IState> options = tttState.SuccessorsO;
+                        
+                        if (!playerTwoDraw)
+                        {
+                            // Prompt the user
+                            TicTacToeState.PrintOptions(options);
+                            Console.Write("Please select a move: ");
+                            int moveIndex = Int32.Parse(Console.ReadLine()) - 1;
+
+                            // Assign the state
+                            tttState = options[moveIndex] as TicTacToeState;
+                            tttState.GoalTest();
+                        }
+                    }
+
+                    // Select outcome
+                    if (playerTwoVictory)
+                        Console.WriteLine("Human player wins!");
+                    
+                    if (playerTwoDefeat)
+                        Console.WriteLine("Computer wins!");
+                    
+                    if (playerTwoDraw)
+                        Console.WriteLine("Cat's game!");
                 }
 
-                // Select outcome
-                if (playerTwoVictory)
-                    Console.WriteLine("Human player wins!");
-                
-                if (playerTwoDefeat)
-                    Console.WriteLine("Computer wins!");
-                
-                if (playerTwoDraw)
-                    Console.WriteLine("Cat's game!");
-            }
+                return 0;
+            });
+
+            // Run the application
+            cla.Execute(args);
         }
     }
 }

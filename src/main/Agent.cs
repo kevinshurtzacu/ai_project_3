@@ -6,7 +6,7 @@ namespace Learn
     public class Agent
     {
         // Discovery bank to store and reward discovered states
-        private Discovered discovered;
+        public Discovered Discovered {get; set; }
 
         // Wins, Losses, Draws
         public long Victories { get; set; }
@@ -16,42 +16,39 @@ namespace Learn
         // Create a default Agent with no GoalTest
         public Agent()
         {
-            discovered = new Discovered();
+            Discovered = new Discovered();
         }
 
         // Respond to victory, defeat, and draw events
         public void Victory(object sender, EventArgs e)
         {
-            discovered.Reward();
+            Discovered.Reward();
             Victories += 1;
         }
 
         public void Defeat(object sender, EventArgs e)
         {
-            discovered.Penalize();
+            Discovered.Penalize();
             Defeats += 1;
         }
 
         public void Draw(object sender, EventArgs e)
         {
-            discovered.Reset();
+            Discovered.Reset();
             Draws += 1;
         }
 
         // Toggle between play behaviors
-        public void TrainingMode(double exploreRate = .5) { discovered.ExploreRate = exploreRate; }
-        public void CompeteMode() { discovered.ExploreRate = 0; }
+        public void TrainingMode(double exploreRate = .5) { Discovered.ExploreRate = exploreRate; }
+        public void CompeteMode() { Discovered.ExploreRate = 0; }
 
         // Use GoalTest to invoke appropriate behaviors
-        public IState Act(Func<List<IState>> goalTest)
+        public IState Act(List<IState> successorStates)
         {
-            // Generate successor states
-            List<IState> successorStates = goalTest();
-
             // Return the next best option
-            return discovered.ChooseSuccessor(successorStates);
+            return Discovered.ChooseSuccessor(successorStates);
         }
 
-        public override string ToString() => discovered.ToString();
+        public override string ToString() => Discovered.ToString();
     }
 }

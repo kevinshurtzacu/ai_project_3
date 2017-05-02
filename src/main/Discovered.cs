@@ -1,13 +1,20 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Xml;
+using System.IO;
 using System;
 using Learn.TicTacToe;
 
 namespace Learn
 {
+    [DataContract]
+    [KnownType(typeof(TicTacToeState))]
+    [KnownType(typeof(Dictionary<IState, double>))]
     public class Discovered
     {
+        [DataMember]
+        private IDictionary<IState, double> stateValues;
         private Stack<IState> moves;
-        private IDictionary<IState, double> discovered;
 
         public double ExploreRate { get; set; }
 
@@ -15,7 +22,7 @@ namespace Learn
         public Discovered()
         {
             moves = new Stack<IState>();
-            discovered = new Dictionary<IState, double>();
+            stateValues = new Dictionary<IState, double>();
             ExploreRate = 0.0;
         }
 
@@ -23,7 +30,7 @@ namespace Learn
         public Discovered(double rate)
         {
             moves = new Stack<IState>();
-            discovered = new Dictionary<IState, double>();
+            stateValues = new Dictionary<IState, double>();
             ExploreRate = rate;
         }
 
@@ -34,18 +41,20 @@ namespace Learn
 
             foreach (IState state in states)
             {
-                // Add any new states to the discovered list
-                if (!discovered.ContainsKey(state))
-                    discovered.Add(state, 0.5);
-
-                // Update best state most of the time
-                Random rand = new Random();
-
-                if (rand.NextDouble() >= ExploreRate || bestState == null)
-                    bestState = (discovered[state] > bestValue) ? state : bestState;
-                else
-                    bestState = (states[rand.Next() % states.Count]);
+                // Add any new states to the stateValues list
+                if (!stateValues.ContainsKey(state))
+                    stateValues.Add(state, 0.5);
+                
+                // Update best state
+                bestState = (stateValues[state] > bestValue) ? state : bestState;
+                bestValue = stateValues[bestState];
             }
+            
+            // Allow for exploration
+            Random rand = new Random();
+
+            if (rand.NextDouble() < ExploreRate)
+                bestState = (states[rand.Next() % states.Count]);
 
             // Add chosen state to moves
             moves.Push(bestState);
@@ -55,58 +64,84 @@ namespace Learn
 
         public void Reward()
         {
-            // Improve all state scores on a graduated scale from 80% to 20%
+            // Improve all state scores on a graduated scale from 5% to 2%
             int numMoves = moves.Count;
-            double percentBonus = .80;
-
+            double percentBonus = .05;
+            
             while (moves.Count > 0)
             {
                 IState state = moves.Pop();
-                
+
                 // Reward favorable states
-                double diff = 1.0 - discovered[state];
+                double diff = 1.0 - stateValues[state];
                 double reward = diff * percentBonus;
-                discovered[state] += reward;
+                stateValues[state] += reward;
 
                 // Decrement reward percentage
-                percentBonus -= (.80 - .20) / numMoves; 
+                percentBonus -= (.05 - .02) / numMoves; 
             }
         }
 
         public void Penalize()
         {
-            // Penalize all state scores on a graduated scale from 80% to 20%
+            // Penalize all state scores on a graduated scale from 5% to 2%
             int numMoves = moves.Count;
-            double percentPenalty = .80;
-
+            double percentPenalty = .05;
+            
             while (moves.Count > 0)
             {
                 IState state = moves.Pop();
                 
                 // Reward favorable states
-                double diff = discovered[state];
+                double diff = stateValues[state];
                 double penalty = diff * percentPenalty;
-                discovered[state] -= penalty;
+                stateValues[state] -= penalty;
 
                 // Decrement reward percentage
-                percentPenalty -= (.80 - .20) / numMoves; 
+                percentPenalty -= (.05 - .02) / numMoves; 
             }
         }
 
         // Clear out past moves, no rewards
-        public void Reset() => moves.Clear();
+        public void Reset() { moves.Clear(); }
         
+        // Export to XML with DataContract
+        public void ExportData(FileStream outStream)
+        {
+            // Use a DataContract serializer to export to XML
+            var dcs = new DataContractSerializer(typeof(Discovered));
+
+            using (XmlWriter xmlWriter = XmlWriter.Create(outStream))
+                dcs.WriteObject(xmlWriter, this);
+        }
+
+        // Import from XML with DataContract
+        public void ImportData(FileStream inStream)
+        {
+            // Deserialize fs into disc
+            Discovered disc = null;
+            var dcs = new DataContractSerializer(typeof(Discovered));
+
+            using (var reader = XmlDictionaryReader.CreateTextReader(inStream, new XmlDictionaryReaderQuotas()))
+                disc = (Discovered)dcs.ReadObject(reader, true);
+            
+            // Copy relevant members
+            stateValues = disc.stateValues;
+        }
+
         public override string ToString()
         {
             string output = "";
 
             // Summarize information
-            output += String.Format($"Keys: {discovered.Keys.Count}");
-            output += String.Format($" Values: {discovered.Values.Count}");
+            output += String.Format($"Keys: {stateValues.Keys.Count}");
+            output += String.Format($" Values: {stateValues.Values.Count}");
             output += String.Format($" Moves: {moves.Count}\n");
+
+            foreach (IState key in stateValues.Keys)
+                output += String.Format($"State: {key.GetHashCode()}\t\tValue: {stateValues[key]}\n");
 
             return output;
         }
     }
-
 }

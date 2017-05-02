@@ -1,14 +1,60 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1",
-    "signature": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    "signature": "190b629e21518b75e8a3c6ab3d9d4c38355cdec9"
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v1.1": {
       "learn/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.CommandLineUtils": "1.1.0",
+          "System.Runtime.Serialization.Xml": "4.3.0"
+        },
         "runtime": {
           "Learn.dll": {}
+        }
+      },
+      "microsoft.extensions.commandlineutils/1.1.0": {
+        "runtime": {
+          "lib/netstandard1.3/Microsoft.Extensions.CommandLineUtils.dll": {}
+        }
+      },
+      "system.private.datacontractserialization/4.3.0": {
+        "dependencies": {
+          "System.Runtime.Serialization.Primitives": "4.3.0",
+          "System.Xml.XmlDocument": "4.3.0",
+          "System.Xml.XmlSerializer": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.Private.DataContractSerialization.dll": {}
+        }
+      },
+      "system.runtime.serialization.primitives/4.3.0": {
+        "runtime": {
+          "lib/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
+        }
+      },
+      "system.runtime.serialization.xml/4.3.0": {
+        "dependencies": {
+          "System.Private.DataContractSerialization": "4.3.0",
+          "System.Runtime.Serialization.Primitives": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.Runtime.Serialization.Xml.dll": {}
+        }
+      },
+      "system.xml.xmldocument/4.3.0": {
+        "runtime": {
+          "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
+        }
+      },
+      "system.xml.xmlserializer/4.3.0": {
+        "dependencies": {
+          "System.Xml.XmlDocument": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
       }
     }
@@ -18,6 +64,48 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "microsoft.extensions.commandlineutils/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZBmdRx6aj7RsJmT8KWZnr0dP/O5C/aChLQ1fD4TC4QBDcnh7/yjucIsZc1o3bLtutkqIqJ4ODPaVEhkEaPJZDQ==",
+      "path": "microsoft.extensions.commandlineutils/1.1.0",
+      "hashPath": "microsoft.extensions.commandlineutils.1.1.0.nupkg.sha512"
+    },
+    "system.private.datacontractserialization/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yDaJ2x3mMmjdZEDB4IbezSnCsnjQ4BxinKhRAaP6kEgL6Bb6jANWphs5SzyD8imqeC/3FxgsuXT6ykkiH1uUmA==",
+      "path": "system.private.datacontractserialization/4.3.0",
+      "hashPath": "system.private.datacontractserialization.4.3.0.nupkg.sha512"
+    },
+    "system.runtime.serialization.primitives/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bYg0FjUhYvwP555yZXDL6ATBa2v2AECPRPUEDrWR0xM+UePbMNYmxkuplmLMp3ugH6GYiH+AHcHGVmPR34mCEg==",
+      "path": "system.runtime.serialization.primitives/4.3.0",
+      "hashPath": "system.runtime.serialization.primitives.4.3.0.nupkg.sha512"
+    },
+    "system.runtime.serialization.xml/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nUQx/5OVgrqEba3+j7OdiofvVq9koWZAC7Z3xGI8IIViZqApWnZ5+lLcwYgTlbkobrl/Rat+Jb8GeD4WQESD2A==",
+      "path": "system.runtime.serialization.xml/4.3.0",
+      "hashPath": "system.runtime.serialization.xml.4.3.0.nupkg.sha512"
+    },
+    "system.xml.xmldocument/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lJ8AxvkX7GQxpC6GFCeBj8ThYVyQczx2+f/cWHJU8tjS7YfI6Cv6bon70jVEgs2CiFbmmM8b9j1oZVx0dSI2Ww==",
+      "path": "system.xml.xmldocument/4.3.0",
+      "hashPath": "system.xml.xmldocument.4.3.0.nupkg.sha512"
+    },
+    "system.xml.xmlserializer/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MYoTCP7EZ98RrANESW05J5ZwskKDoN0AuZ06ZflnowE50LTpbR5yRg3tHckTVm5j/m47stuGgCrCHWePyHS70Q==",
+      "path": "system.xml.xmlserializer/4.3.0",
+      "hashPath": "system.xml.xmlserializer.4.3.0.nupkg.sha512"
     }
   }
 }
