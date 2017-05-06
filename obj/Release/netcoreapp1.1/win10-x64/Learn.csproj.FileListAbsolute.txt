@@ -1,0 +1,11 @@
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Release/netcoreapp1.1/win10-x64/hostpolicy.dll
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Release/netcoreapp1.1/win10-x64/hostfxr.dll
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Release/netcoreapp1.1/win10-x64/Learn.exe
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Release/netcoreapp1.1/win10-x64/Learn.deps.json
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Release/netcoreapp1.1/win10-x64/Learn.runtimeconfig.json
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Release/netcoreapp1.1/win10-x64/Learn.runtimeconfig.dev.json
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Release/netcoreapp1.1/win10-x64/Learn.dll
+/home/kevin/Development/school/artificial_intelligence/Learn/bin/Release/netcoreapp1.1/win10-x64/Learn.pdb
+/home/kevin/Development/school/artificial_intelligence/Learn/obj/Release/netcoreapp1.1/win10-x64/Learn.AssemblyInfo.cs
+/home/kevin/Development/school/artificial_intelligence/Learn/obj/Release/netcoreapp1.1/win10-x64/Learn.dll
+/home/kevin/Development/school/artificial_intelligence/Learn/obj/Release/netcoreapp1.1/win10-x64/Learn.pdb

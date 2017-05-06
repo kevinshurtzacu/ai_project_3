@@ -173,15 +173,15 @@ namespace Learn.TicTacToe
             TicTacToeState.CatsGame    += playerTwo.Draw;
         }
         
-        public static void TrainZeroSum(long practiceGames, bool showOutput, params Agent[] agents)
+        public static void TrainZeroSum(long practiceGames, bool showOutput, Agent agentOne, Agent agentTwo)
         {
             // Create starting state
             IState state = new TicTacToeState();
             TicTacToeState tttState = state as TicTacToeState;
             
             // Put agents in training mode
-            foreach (Agent agent in agents)
-                agent.TrainingMode(1.0);
+            agentOne.TrainingMode(1.0);
+            agentTwo.TrainingMode(1.0);
 
             // Use repeated wins as a benchmark
             bool enoughTraining = false;
@@ -204,10 +204,10 @@ namespace Learn.TicTacToe
             while (!enoughTraining)
             {
                 // Train the first agent
-                tttState = agents[0].Act(tttState.SuccessorsX) as TicTacToeState;
+                tttState = agentOne.Act(tttState.SuccessorsX) as TicTacToeState;
                 tttState.GoalTest();
 
-                games = agents[0].Victories + agents[1].Victories + agents[0].Draws;
+                games = agentOne.Victories + agentTwo.Victories + agentOne.Draws;
                 
                 if (games % (practiceGames / 100) == 0 && !dotPrinted)
                 {
@@ -219,8 +219,8 @@ namespace Learn.TicTacToe
                             Console.Write($"[{ticks}]");
 
                         // Make each agent more competitive
-                        foreach (Agent agent in agents)
-                            agent.TrainingMode((100 - ticks) / 100);
+                        agentOne.TrainingMode((100.0 - ticks) / 100.0);
+                        agentTwo.TrainingMode((100.0 - ticks) / 100.0);
                     }
 
                     // Update ticks
@@ -240,10 +240,10 @@ namespace Learn.TicTacToe
                 // Train the second agent, assuming they are not sufficiently trained
                 if (!enoughTraining)
                 {
-                    tttState = agents[1].Act(tttState.SuccessorsO) as TicTacToeState;
+                    tttState = agentTwo.Act(tttState.SuccessorsO) as TicTacToeState;
                     tttState.GoalTest();
 
-                    games = agents[0].Victories + agents[1].Victories + agents[0].Draws;
+                    games = agentOne.Victories + agentTwo.Victories + agentOne.Draws;
                     
                     if (games % (practiceGames / 100) == 0 && !dotPrinted)
                     {
@@ -255,8 +255,8 @@ namespace Learn.TicTacToe
                                 Console.Write($"[{ticks}]");
 
                             // Make each agent more competitive
-                            foreach (Agent agent in agents)
-                                agent.TrainingMode((100 - ticks) / 100);
+                            agentOne.TrainingMode((100.0 - ticks) / 100.0);
+                            agentTwo.TrainingMode((100.0 - ticks) / 100.0);
                         }
 
                         // Update ticks
@@ -283,8 +283,8 @@ namespace Learn.TicTacToe
             }
 
             // Put agents in competitive mode
-            foreach (Agent agent in agents)
-                agent.CompeteMode();
+            agentOne.CompeteMode();
+            agentTwo.CompeteMode();
         }
 
         public static void PrintOptions(List<IState> successors)

@@ -4,13 +4,15 @@ using System.Xml;
 using System.IO;
 using System;
 using Learn.TicTacToe;
+using Learn.Checkers;
 
 namespace Learn
 {
     [DataContract]
     [KnownType(typeof(TicTacToeState))]
+    [KnownType(typeof(CheckerState))]
     [KnownType(typeof(Dictionary<IState, double>))]
-    public class Discovered
+    public sealed class Discovered
     {
         [DataMember]
         private IDictionary<IState, double> stateValues;

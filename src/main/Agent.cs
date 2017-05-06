@@ -3,7 +3,7 @@ using System;
 
 namespace Learn
 {
-    public class Agent
+    public sealed class Agent
     {
         // Discovery bank to store and reward discovered states
         public Discovered Discovered {get; set; }

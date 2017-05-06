@@ -2,55 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System;
+using Learn;
 
 namespace Learn.TicTacToe
 {
     class TicTacToeRun
     {
-        // Deserialize data
-        private static void handleInFile(CommandOption inFile, Agent agentOne, Agent agentTwo, int training)
-        {
-            // Deserialize data or train fresh agents
-            if (inFile.HasValue())
-            {
-                try
-                {
-                    // Use previously constructed data
-                    using (FileStream rofStream = File.OpenRead(inFile.Value()))
-                        agentOne.Discovered.ImportData(rofStream);
-                }
-                catch (Exception e)
-                {
-                    // Report failure to open or read serialized data
-                    Console.Error.WriteLine($"Error: {e}; Failed to read serialized data");
-                }
-            }
-            else
-            {
-                // Train fresh agents
-                TicTacToeState.TrainZeroSum(training, true, agentOne, agentTwo);                
-            }
-        }
-        
-        // Save serialized data
-        private static void handleOutFile(CommandOption outFile, Agent agent)
-        {
-            if (outFile.HasValue())
-            {
-                try
-                {
-                    // Use previously constructed data
-                    using (FileStream wfStream = File.OpenWrite(outFile.Value()))
-                        agent.Discovered.ExportData(wfStream);
-                }
-                catch (Exception e)
-                {
-                    // Report failure to open or write serialized data
-                    Console.Error.WriteLine($"Error: {e}; Failed to write serialized data");
-                }
-            }
-        }
-
         static void Main(string[] args)
         {
             // Process CLI arguments
@@ -99,8 +56,8 @@ namespace Learn.TicTacToe
                 int numGames = training.HasValue() ? Int32.Parse(training.Value()) : 100000;
 
                 // Handle Arguments
-                handleInFile(inFile, playerOne, playerTwo, numGames);
-                handleOutFile(outFile, playerOne);
+                Utilities.HandleInFile(inFile, playerOne, playerTwo, numGames, TicTacToeState.TrainZeroSum);
+                Utilities.HandleOutFile(outFile, playerOne);
 
                 // Determine victory, defeat, and cat's game events
                 bool playerTwoVictory = false;

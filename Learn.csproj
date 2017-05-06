@@ -8,6 +8,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <StartupObject>Learn.Checkers.CheckerRun</StartupObject>
+    <RuntimeIdentifiers>win10-x64;osx.10.10-x64;linuxmint.18-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
 </Project>
