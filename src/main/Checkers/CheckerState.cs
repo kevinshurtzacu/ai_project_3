@@ -540,7 +540,7 @@ namespace Learn.Checkers
                 otherPieceKing = Piece.WhiteKing;
                 advance = 1;
             }
-
+            
             // If there is a forward-left enemy piece
             if (inBounds(row + advance, col - 1)
                 && (board[row + advance][col - 1] == otherPiece
@@ -551,7 +551,7 @@ namespace Learn.Checkers
                     && (board[row + (advance * 2)][col - 2] == Piece.Blank))
                 {
                     // Add any possible successors
-                    CheckerState modState = makeMove(row, col, row + (advance * 2), col - 2, true);
+                    CheckerState modState = state.makeMove(row, col, row + (advance * 2), col - 2, true);
 
                     // If current piece becomes a king
                     if (isKing == false
@@ -579,7 +579,7 @@ namespace Learn.Checkers
                     && (board[row + (advance * 2)][col + 2] == Piece.Blank))
                 {
                     // Add any possible successors
-                    CheckerState modState = makeMove(row, col, row + (advance * 2), col + 2, true);
+                    CheckerState modState = state.makeMove(row, col, row + (advance * 2), col + 2, true);
 
                     // If current piece becomes a king
                     if (isKing == false
@@ -610,7 +610,7 @@ namespace Learn.Checkers
                         && (board[row - (advance * 2)][col - 2] == Piece.Blank))
                     {
                         // Add any possible successors
-                        CheckerState modState = makeMove(row, col, row - (advance * 2), col - 2, true);
+                        CheckerState modState = state.makeMove(row, col, row - (advance * 2), col - 2, true);
                         successors.AddRange(getJumps(row - (advance * 2), col - 2, move, modState));
                     }
                 }
@@ -625,7 +625,7 @@ namespace Learn.Checkers
                         && (board[row - (advance * 2)][col + 2] == Piece.Blank))
                     {
                         // Add any possible successors
-                        CheckerState modState = makeMove(row, col, row - (advance * 2), col + 2, true);
+                        CheckerState modState = state.makeMove(row, col, row - (advance * 2), col + 2, true);
                         successors.AddRange(getJumps(row - (advance * 2), col + 2, move, modState));
                     }
                 }

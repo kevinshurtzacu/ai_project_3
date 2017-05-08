@@ -209,6 +209,7 @@ namespace Learn.TicTacToe
 
                 games = agentOne.Victories + agentTwo.Victories + agentOne.Draws;
                 
+                // Account for every 1% of progress
                 if (games % (practiceGames / 100) == 0 && !dotPrinted)
                 {
                     // Update competitiveness at quarters
@@ -234,7 +235,7 @@ namespace Learn.TicTacToe
                 }
 
                 // Check if total number of practices have been met
-                if (games > practiceGames)
+                if (games >= practiceGames)
                     enoughTraining = true;
                 
                 // Train the second agent, assuming they are not sufficiently trained
@@ -245,6 +246,7 @@ namespace Learn.TicTacToe
 
                     games = agentOne.Victories + agentTwo.Victories + agentOne.Draws;
                     
+                    // Account for every 1% of progress
                     if (games % (practiceGames / 100) == 0 && !dotPrinted)
                     {
                         // Update competitiveness at quarters
@@ -270,7 +272,7 @@ namespace Learn.TicTacToe
                     }
 
                     // Check if total number of practices have been met
-                    if (games > practiceGames)
+                    if (games >= practiceGames)
                         enoughTraining = true;
                 }
             }
