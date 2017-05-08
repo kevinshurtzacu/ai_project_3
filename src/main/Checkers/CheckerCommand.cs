@@ -117,7 +117,7 @@ namespace Learn.Checkers
         public static void Configure(CommandLineApplication app)
         {
             // Set description and help option
-            app.Description = "Train an agent to play checkers";
+            app.Description = "Train an agent to play Checkers";
             app.HelpOption("-h | --help");
 
             // Handle serialized input

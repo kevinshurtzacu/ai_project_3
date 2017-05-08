@@ -6,3 +6,11 @@
 /home/kevin/Development/school/artificial_intelligence/Learn/obj/Debug/netcoreapp1.1/Learn.AssemblyInfo.cs
 /home/kevin/Development/school/artificial_intelligence/Learn/obj/Debug/netcoreapp1.1/Learn.dll
 /home/kevin/Development/school/artificial_intelligence/Learn/obj/Debug/netcoreapp1.1/Learn.pdb
+C:\Users\Kevin\Desktop\Learn\bin\Debug\netcoreapp1.1\Learn.deps.json
+C:\Users\Kevin\Desktop\Learn\bin\Debug\netcoreapp1.1\Learn.runtimeconfig.json
+C:\Users\Kevin\Desktop\Learn\bin\Debug\netcoreapp1.1\Learn.runtimeconfig.dev.json
+C:\Users\Kevin\Desktop\Learn\bin\Debug\netcoreapp1.1\Learn.dll
+C:\Users\Kevin\Desktop\Learn\bin\Debug\netcoreapp1.1\Learn.pdb
+C:\Users\Kevin\Desktop\Learn\obj\Debug\netcoreapp1.1\Learn.AssemblyInfo.cs
+C:\Users\Kevin\Desktop\Learn\obj\Debug\netcoreapp1.1\Learn.dll
+C:\Users\Kevin\Desktop\Learn\obj\Debug\netcoreapp1.1\Learn.pdb

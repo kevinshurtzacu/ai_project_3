@@ -82,7 +82,7 @@
     "system.runtime.serialization.primitives/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-bYg0FjUhYvwP555yZXDL6ATBa2v2AECPRPUEDrWR0xM+UePbMNYmxkuplmLMp3ugH6GYiH+AHcHGVmPR34mCEg==",
+      "sha512": "sha512-FisaK/oA2T28Q6TCsC+5oeDVWHhBwg0MtTucK++YlqaOALZPcVY7o58HWM0SEzV4FnRivmH8Jf+Wt2tGS4fr7A==",
       "path": "system.runtime.serialization.primitives/4.3.0",
       "hashPath": "system.runtime.serialization.primitives.4.3.0.nupkg.sha512"
     },
