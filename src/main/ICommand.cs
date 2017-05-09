@@ -1,4 +1,7 @@
-public interface ICommand
+namespace Learn
 {
-    void Run();
+    public interface ICommand
+    {
+        void Run();
+    }
 }

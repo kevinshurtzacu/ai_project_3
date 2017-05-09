@@ -48,12 +48,12 @@ namespace Learn.TicTacToe
             // Wire player behaviors to state events
             TicTacToeState.WireEvents(tttState, playerOne, playerTwo);
 
+            // Conduct training
+            if (!useInFile) TicTacToeState.TrainZeroSum(training, !quiet, playerOne, playerTwo);
+
             // Handle serialization
             if (useInFile)  Utilities.ReadInFile(inFile, playerOne, playerTwo);
             if (useOutFile) Utilities.WriteOutFile(outFile, playerOne);
-
-            // Conduct training
-            if (!useInFile) TicTacToeState.TrainZeroSum(training, !quiet, playerOne, playerTwo);
 
             // Determine victory, defeat, and cat's game events
             bool playerTwoVictory = false;

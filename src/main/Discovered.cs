@@ -11,6 +11,7 @@ namespace Learn
     [DataContract]
     [KnownType(typeof(TicTacToeState))]
     [KnownType(typeof(CheckerState))]
+    [KnownType(typeof(CheckerState.Piece))]
     [KnownType(typeof(Dictionary<IState, double>))]
     public sealed class Discovered
     {

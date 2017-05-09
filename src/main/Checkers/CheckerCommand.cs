@@ -46,13 +46,13 @@ namespace Learn.Checkers
             // Wire player behaviors to state events
             CheckerState.WireEvents(checkerState, playerOne, playerTwo);
 
-            // Handle Arguments
+            // Train agents
+            if (!useInFile) CheckerState.TrainZeroSum(training, !quiet, playerOne, playerTwo);
+
+            // Handle Serialization
             if (useInFile)  Utilities.ReadInFile(inFile, playerOne, playerTwo);
             if (useOutFile) Utilities.WriteOutFile(outFile, playerOne);
 
-            // Train agents
-            if (!useInFile) CheckerState.TrainZeroSum(training, !quiet, playerOne, playerTwo);
-            Console.WriteLine(playerTwo.Discovered);
             // Determine victory, defeat, and cat's game events
             bool playerTwoVictory = false;
             bool playerTwoDefeat = false;
